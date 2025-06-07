@@ -289,45 +289,78 @@ screen navigation():
     vbox:
         style_prefix "navigation"
 
-        xpos gui.navigation_xpos
-        yalign 0.5
+        if renpy.get_screen("main_menu"):
+            xalign 0.2
+        else:
+            xoffset 60
+        yalign 0.8
 
         spacing gui.navigation_spacing
 
         if main_menu:
 
-            textbutton _("Start") action Start()
+            textbutton _("New Game"):
+                hover_sound "sfx_hover.ogg"
+                activate_sound "sfx_click.wav"
+
+                action Start()
 
         else:
 
-            textbutton _("History") action ShowMenu("history")
+            textbutton _("History"):
+                hover_sound "sfx_hover.ogg"
+                activate_sound "sfx_click.wav"
+                action ShowMenu("history")
 
-            textbutton _("Save") action ShowMenu("save")
+            textbutton _("Save Game"): 
+                hover_sound "sfx_hover.ogg"
+                activate_sound "sfx_click.wav"
+                action ShowMenu("save")
 
-        textbutton _("Load") action ShowMenu("load")
+        textbutton _("Load Game"):
+            hover_sound "sfx_hover.ogg"
+            activate_sound "sfx_click.wav"
+            action ShowMenu("load")
 
-        textbutton _("Preferences") action ShowMenu("preferences")
-
+        textbutton _("Options"):
+            hover_sound "sfx_hover.ogg"
+            activate_sound "sfx_click.wav" 
+            action ShowMenu("preferences")
+        
+        if renpy.get_screen("main_menu"):
+            textbutton _("Album"):
+                hover_sound "sfx_hover.ogg"
+                activate_sound "sfx_click.wav" 
+                action ShowMenu("album")
         if _in_replay:
 
             textbutton _("End Replay") action EndReplay(confirm=True)
 
         elif not main_menu:
 
-            textbutton _("Main Menu") action MainMenu()
+            textbutton _("Main Menu"):
+                hover_sound "sfx_hover.ogg"
+                activate_sound "sfx_click.wav"    
+                action MainMenu()
 
-        textbutton _("About") action ShowMenu("about")
+        #textbutton _("About") action ShowMenu("about")
 
-        if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
+        #if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
 
             ## Help isn't necessary or relevant to mobile devices.
-            textbutton _("Help") action ShowMenu("help")
+            #textbutton _("Help"): 
+                #hover_sound "sfx_hover.ogg"
+                #activate_sound "sfx_click.wav"
+                #action ShowMenu("help")
 
         if renpy.variant("pc"):
 
             ## The quit button is banned on iOS and unnecessary on Android and
             ## Web.
-            textbutton _("Quit") action Quit(confirm=not main_menu)
+            textbutton _("Quit"):
+                hover_sound "sfx_hover.ogg"
+                activate_sound "sfx_click.wav"
+                action Quit(confirm=not main_menu)
 
 
 style navigation_button is gui_button
@@ -339,6 +372,7 @@ style navigation_button:
 
 style navigation_button_text:
     properties gui.text_properties("navigation_button")
+    xalign 0.5
 
 
 ## Main Menu screen ############################################################
@@ -347,12 +381,35 @@ style navigation_button_text:
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#main-menu
 
+#patreon button
+transform patreonbutton:
+    xalign 1.0
+    xoffset -1500
+    yalign 1.0
+    yoffset -20
+    zoom 0.25
+
+#logo positioning
+transform logo_pos: 
+    zoom 0.3 #adjust as required
+    xalign 0.1
+    yalign 0.2
+
 screen main_menu():
 
     ## This ensures that any other menu screen is replaced.
     tag menu
+    
 
     add gui.main_menu_background
+    add title_logo at logo_pos
+    imagebutton auto "gui/patreon_%s.png":
+        action OpenURL("https://www.patreon.com/c/nuttosgx/home")
+        at patreonbutton
+        
+        focus_mask True
+        hover_sound "sfx_hover.ogg"
+        activate_sound "sfx_click.wav"
 
     ## This empty frame darkens the main menu.
     frame:
@@ -367,8 +424,6 @@ screen main_menu():
         vbox:
             style "main_menu_vbox"
 
-            text "[config.name!t]":
-                style "main_menu_title"
 
             text "[config.version]":
                 style "main_menu_version"
@@ -384,11 +439,11 @@ style main_menu_frame:
     xsize 420
     yfill True
 
-    background "gui/overlay/main_menu.png"
+    
 
 style main_menu_vbox:
     xalign 1.0
-    xoffset -30
+    xoffset -1790
     xmaximum 1200
     yalign 1.0
     yoffset -30
@@ -474,7 +529,8 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
     textbutton _("Return"):
         style "return_button"
-
+        hover_sound "sfx_hover.ogg"
+        activate_sound "sfx_click.wav"
         action Return()
 
     label title
@@ -1251,7 +1307,7 @@ style skip_text:
 style skip_triangle:
     ## We have to use a font that has the BLACK RIGHT-POINTING SMALL TRIANGLE
     ## glyph in it.
-    font "DejaVuSans.ttf"
+    font "font/Jesaya_Lt.otf"
 
 
 ## Notify screen ###############################################################
